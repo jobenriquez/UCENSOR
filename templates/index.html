@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>UCENSOR | Home</title>
+</head>
+
+<body>
+    <header id="navbar">
+        <nav class="nav">
+            <div class="nav_bar">
+                <div id="nav_logo">
+                    <img src="{{ url_for('static', filename='images/logo-2.png') }}" alt="" class="logo">
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section id="work_area">
+        <div class="logo_container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+        </div>
+        <div id="flex_container">
+            <div class="text_box_container">
+                <form action="/" method="post">
+                    <textarea class="text_box" id="input_box" rows="13" cols="33" placeholder="Enter your text here"></textarea>
+                    <div id="submit_container">
+                        <input id="submit" type="submit" value="Censor">
+                    </div>
+                </form>  
+            </div>
+            <div class="text_box_container">
+                <form>
+                    <textarea class="text_box" id="output_box" rows="13" cols="33" readonly></textarea>
+                </form>  
+            </div>
+        </div>
+    </section>
+    <script>
+        // JavaScript code to update the output textarea with the censored text
+        const inputBox = document.getElementById('input_box');
+        const outputBox = document.getElementById('output_box');
+
+        // Listen for form submission
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Fetch the user input from the input_box
+            const userInput = inputBox.value;
+
+            // Make a POST request to the Flask route to get the censored text
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the output_box with the censored text
+                outputBox.value = data.censored_sentence;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
